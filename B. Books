@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int n,t;
+ 
+ 
+bool canRead(int num, vector<int> &pf_sum){
+    vector<int> req;
+    req.push_back(pf_sum[num-1]);
+    for(int i=1; i<=(n-num); i++){
+        req.push_back(pf_sum[i+num-1]-pf_sum[i-1]);
+    }
+    if(*min_element(req.begin(), req.end())<=t) return true;
+    return false;
+}
+ 
+ 
+int main() {
+    
+    cin >> n >> t;
+    vector<int> pf_sum(n);
+    vector<int> a(n);
+    for(int i=0; i<n; i++){
+        cin >> a[i];
+    }
+    if(n==1){
+        if(a[0]<=t) cout << 1 << endl;
+        else cout << 0 << endl;
+        return 0;
+    }
+    pf_sum[0] = a[0];
+    for(int i=1; i<n; i++){
+        pf_sum[i] = pf_sum[i-1] + a[i];
+    }
+    // Implement Binary Search on Predicate Function
+    int lo = 0;
+    int hi = n;
+    int mid;
+    while(hi-lo>1){
+        mid = (hi+lo)/2 ;
+        if(canRead(mid, pf_sum)){
+            lo = mid;
+        }else{
+            hi = mid-1;
+        }
+    }
+    if(canRead(hi, pf_sum)) cout << hi << endl;
+    else cout << lo << endl;
+}
